@@ -1,0 +1,27 @@
+import json
+import urllib.request
+import requests
+from collections import defaultdict
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+
+url = "https://www.imdb.com/india/top-rated-indian-movies/"
+page = requests.get(url)
+soup = BeautifulSoup(page.content, 'html.parser')
+results = soup.find_all("td", {"class": "titleColumn"})
+
+stars = defaultdict(int)
+
+for item in results:
+	elem = item.find("a")
+	url = "https://www.imdb.com/" + elem.get("href")
+	page = requests.get(url)
+	data = BeautifulSoup(page.content, 'html.parser')
+	data = json.loads(data.find('script', type='application/ld+json').contents[0])
+	for actor in data.get("actor"):
+			stars[actor.get("name")] += 1
+
+print(stars)
+print(sorted(stars, key=stars.get, reverse=True))
