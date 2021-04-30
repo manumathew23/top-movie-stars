@@ -1,0 +1,5 @@
+Use the below installations with pip version for Python3 in your system unless already satisfied
+
+pip install beautifulsoup4
+pip install urllib
+
